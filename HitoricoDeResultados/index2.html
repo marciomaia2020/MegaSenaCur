@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Histórico de Resultados Mega-Sena</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 1200px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .result {
+        margin-bottom: 20px;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .result h3 {
+        margin-bottom: 10px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr); /* 10 colunas por linha */
+        gap: 0px; /* Remove o espaço entre os números */
+        justify-items: center;
+        grid-template-rows: repeat(6, auto); /* 6 linhas de números */
+    }
+
+    .number {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        background-color: white;
+        font-weight: bold;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .highlight {
+        background-color: #930089;
+        color: white;
+        border-color: #930089;
+    }
+
+    .loading {
+        display: none;
+        margin: 20px 0;
+    }
+
+    .loading.active {
+        display: block;
+    }
+
+    .error {
+        color: red;
+        margin-top: 10px;
+    }
+
+    button {
+        padding: 8px 16px;
+        background-color: #930089;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #6b0063;
+    }
+
+    .game-container {
+        border: 1px solid #002;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        background-color: #fff;
+    }
+
+    /* Ajuste para exibir três resultados por linha */
+    .column {
+        display: flex;
+        flex-wrap: wrap; /* Permite a quebra de linha */
+        gap: 20px; /* Espaçamento entre os resultados */
+        justify-content: space-between;
+    }
+
+    .column .result {
+        flex-basis: 31%; /* Faz com que cada resultado ocupe 31% da largura da linha */
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Histórico de Resultados Mega-Sena</h2>
+        <button id="loadResults">Carregar Resultados</button>
+        <div id="loading" class="loading">Carregando resultados...</div>
+        <div id="error" class="error"></div>
+        <div id="results" class="column"></div>
+    </div>
+
+    <script>
+    async function fetchResults() {
+        const resultsContainer = document.getElementById('results');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+
+        loading.classList.add('active');
+        error.textContent = '';
+        resultsContainer.innerHTML = '';
+
+        const baseUrl = 'https://loteriascaixa-api.herokuapp.com/api/megasena'; // Atualizado para Mega-Sena
+        let concurso = 1;
+        let keepFetching = true;
+
+        try {
+            while (keepFetching) {
+                const url = `${baseUrl}/${concurso}`;
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    keepFetching = false;
+                    break;
+                }
+
+                const data = await response.json();
+                const dezenas = data.dezenas.map(Number); // Garante que todas as dezenas sejam números
+
+                // Cria um elemento de resultado
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'result';
+
+                const title = document.createElement('h3');
+                title.textContent = `Concurso: ${data.concurso} - Data: ${data.data}`;
+                resultDiv.appendChild(title);
+
+                // Cria um contêiner para o jogo
+                const gameContainer = document.createElement('div');
+                gameContainer.className = 'game-container';
+
+                // Cria a coluna para os resultados
+                const column = document.createElement('div');
+                column.className = 'column';
+
+                // Cria a grade para o primeiro conjunto de números (1-30)
+                const grid1 = document.createElement('div');
+                grid1.className = 'grid';
+
+                for (let i = 1; i <= 30; i++) {
+                    const numberDiv = document.createElement('div');
+                    numberDiv.className = 'number';
+                    numberDiv.textContent = i.toString().padStart(2, '0');
+
+                    if (dezenas.includes(i)) {
+                        numberDiv.classList.add('highlight');
+                    }
+
+                    grid1.appendChild(numberDiv);
+                }
+
+                // Cria a grade para o segundo conjunto de números (31-60)
+                const grid2 = document.createElement('div');
+                grid2.className = 'grid';
+
+                for (let i = 31; i <= 60; i++) {
+                    const numberDiv = document.createElement('div');
+                    numberDiv.className = 'number';
+                    numberDiv.textContent = i.toString().padStart(2, '0');
+
+                    if (dezenas.includes(i)) {
+                        numberDiv.classList.add('highlight');
+                    }
+
+                    grid2.appendChild(numberDiv);
+                }
+
+                // Adiciona as duas grades na coluna
+                column.appendChild(grid1);
+                column.appendChild(grid2);
+
+                // Adiciona a coluna ao contêiner do jogo
+                gameContainer.appendChild(column);
+
+                // Adiciona o contêiner do jogo ao resultado
+                resultDiv.appendChild(gameContainer);
+                resultsContainer.appendChild(resultDiv);
+
+                concurso++;
+            }
+        } catch (err) {
+            error.textContent = 'Erro ao buscar os resultados. Tente novamente mais tarde.';
+            console.error(err);
+        } finally {
+            loading.classList.remove('active');
+        }
+    }
+
+    document.getElementById('loadResults').addEventListener('click', fetchResults);
+    </script>
+</body>
+</html>
