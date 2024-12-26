@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados da Mega-Sena</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #FFFFFF;
+            color: #2E8B57;
+        }
+        h1 {
+            text-align: center;
+            color: #006400;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #F0F8FF;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #4CAF50;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #F9F9F9;
+        }
+        tr:nth-child(odd) {
+            background-color: #FFFFFF;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .mega-sena-button {
+            background-color: #FFD700;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .mega-sena-button:hover {
+            background-color: #DAA520;
+        }
+        .loading {
+            text-align: center;
+            font-size: 18px;
+            color: #FF6347;
+        }
+        .completed {
+            text-align: center;
+            font-size: 18px;
+            color: #32CD32;
+        }
+        .centralizado{
+            text-align: center;
+            font-size: 12px;
+            color: blue; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Resultados da Mega-Sena</h1>
+    <button class="mega-sena-button" onclick="fetchAllMegaSenaResults()">Carregar Resultados</button>
+
+    <div class="centralizado">
+        <p>Resultados de todos os sorteios da Mega Sena</p>
+    </div>
+    
+    <div id="loadingMessage" class="loading" style="display: none;">Carregando resultados...</div>
+    <div id="completedMessage" class="completed" style="display: none;">Carregamento concluído!</div>
+    
+    <table id="megaSenaResults">
+        <thead>
+            <tr>
+                <th>Concurso</th>
+                <th>Data do Sorteio</th>
+                <th>Dezenas Sorteadas</th>
+                <th>Ganhadores</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Resultados da Mega-Sena serão inseridos aqui -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+   async function fetchAllMegaSenaResults() {
+    const baseUrl = 'https://loteriascaixa-api.herokuapp.com/api/megasena/'; // Base da API
+    let results = [];
+    const loadingMessage = document.getElementById('loadingMessage');
+    const completedMessage = document.getElementById('completedMessage');
+    const tableBody = document.getElementById('megaSenaResults').getElementsByTagName('tbody')[0];
+
+    // Mostra mensagem de carregamento
+    loadingMessage.style.display = 'block';
+    completedMessage.style.display = 'none';  // Garante que a mensagem de conclusão esteja oculta no início
+    tableBody.innerHTML = ''; // Limpa qualquer resultado anterior
+
+    try {
+        // Obtém o último concurso para saber quando parar a busca
+        const latestResponse = await fetch(`${baseUrl}latest`);
+        if (!latestResponse.ok) throw new Error('Não foi possível acessar os dados da API.');
+
+        const latestData = await latestResponse.json();
+        if (!latestData || !latestData.concurso) {
+            throw new Error('Não foi possível obter o número do último concurso.');
+        }
+
+        const lastContest = latestData.concurso; // Último concurso
+        console.log('Último concurso encontrado:', lastContest);
+
+        // Informa ao usuário que estamos começando a carregar os resultados
+        let concurso = 1;
+        loadingMessage.innerText = `Carregando concurso ${concurso} de ${lastContest}...`;
+
+        while (concurso <= lastContest) {
+            const response = await fetch(`${baseUrl}${concurso}`);
+            if (!response.ok) {
+                console.error(`Erro ao buscar o concurso ${concurso}`);
+                concurso++; // Tenta o próximo concurso
+                continue;
+            }
+
+            const data = await response.json();
+            if (data && data.concurso && data.data && data.dezenas) {
+                results.push({
+                    concurso: data.concurso,
+                    data: data.data,
+                    dezenas: data.dezenas.join(' - '),
+                    ganhadores: data.acumulou ? 'Acumulado' : (data.ganhadores || 'Indisponível'),
+                });
+
+                // Adiciona o concurso à tabela assim que é recebido
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td>${data.concurso}</td>
+                    <td>${data.data}</td>
+                    <td>${data.dezenas.join(' - ')}</td>
+                    <td>${data.acumulou ? 'Acumulado' : (data.ganhadores || 'Indisponível')}</td>
+                `;
+            } else {
+                console.error(`Dados do concurso ${concurso} estão incompletos ou ausentes.`);
+            }
+
+            concurso++; // Avança para o próximo concurso
+
+            // Atualiza a mensagem de carregamento
+            loadingMessage.innerText = `Carregando concurso ${concurso} de ${lastContest}...`;
+        }
+
+        // Verifica se resultados foram encontrados
+        if (results.length === 0) {
+            throw new Error('Nenhum resultado encontrado.');
+        }
+
+    } catch (error) {
+        console.error('Erro ao buscar os resultados:', error);
+        alert(`Erro: ${error.message}. Por favor, tente novamente mais tarde.`);
+    } finally {
+        // Oculta a mensagem de carregamento e exibe a de conclusão
+        loadingMessage.style.display = 'none';
+        completedMessage.style.display = 'block';
+    }
+}
+</script>
+
+</body>
+</html>

@@ -106,114 +106,143 @@
         align-items: center;
         gap: 20px; /* Espaçamento entre os resultados */
     }
+    .feedback {
+        margin-top: 20px;
+        font-size: 16px;
+        color: #333;
+        font-weight: bold;
+    }
+    
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Histórico de Resultados Mega-Sena</h2>
         <button id="loadResults">Carregar Resultados</button>
+
+        <div>
+            <progress id="progressBar" max="100" value="0" style="width: 100%;"></progress>
+            <span id="progressLabel">0%</span>
+        </div>
+        
         <div id="loading" class="loading">Carregando resultados...</div>
         <div id="error" class="error"></div>
         <div id="results"></div>
+        <div id="feedback" class="feedback"></div> <!-- Novo elemento para feedback -->
     </div>
 
     <script>
-    async function fetchResults() {
-        const resultsContainer = document.getElementById('results');
-        const loading = document.getElementById('loading');
-        const error = document.getElementById('error');
+async function fetchResults() {
+    const resultsContainer = document.getElementById('results');
+    const loading = document.getElementById('loading');
+    const error = document.getElementById('error');
+    const progressBar = document.getElementById('progressBar');
+    const progressLabel = document.getElementById('progressLabel');
+    const feedback = document.getElementById('feedback'); // Elemento para feedback
+    const estimatedTotal = 3000; // Estimativa do número total de concursos
 
-        loading.classList.add('active');
-        error.textContent = '';
-        resultsContainer.innerHTML = '';
+    // Resetando estado inicial
+    loading.classList.add('active');
+    error.textContent = '';
+    resultsContainer.innerHTML = '';
+    progressBar.value = 0;
+    progressLabel.textContent = '0%';
+    feedback.textContent = ''; // Limpa o feedback anterior
 
-        const baseUrl = 'https://loteriascaixa-api.herokuapp.com/api/megasena'; // Atualizado para Mega-Sena
-        let concurso = 1;
-        let keepFetching = true;
+    const baseUrl = 'https://loteriascaixa-api.herokuapp.com/api/megasena';
+    let concurso = 1;
+    let keepFetching = true;
+    let lastConcurso = null; // Para armazenar o último concurso carregado
 
-        try {
-            while (keepFetching) {
-                const url = `${baseUrl}/${concurso}`;
-                const response = await fetch(url);
+    try {
+        while (keepFetching) {
+            const url = `${baseUrl}/${concurso}`;
+            const response = await fetch(url);
 
-                if (!response.ok) {
-                    keepFetching = false;
-                    break;
-                }
-
-                const data = await response.json();
-                const dezenas = data.dezenas.map(Number); // Garante que todas as dezenas sejam números
-
-                // Cria um elemento de resultado
-                const resultDiv = document.createElement('div');
-                resultDiv.className = 'result';
-
-                const title = document.createElement('h3');
-                title.textContent = `Concurso: ${data.concurso} - Data: ${data.data}`;
-                resultDiv.appendChild(title);
-
-                // Cria um contêiner para o jogo
-                const gameContainer = document.createElement('div');
-                gameContainer.className = 'game-container';
-
-                // Cria a coluna para os resultados
-                const column = document.createElement('div');
-                column.className = 'column';
-
-                // Cria a grade para o primeiro conjunto de números (1-30)
-                const grid1 = document.createElement('div');
-                grid1.className = 'grid';
-
-                for (let i = 1; i <= 30; i++) {
-                    const numberDiv = document.createElement('div');
-                    numberDiv.className = 'number';
-                    numberDiv.textContent = i.toString().padStart(2, '0');
-
-                    if (dezenas.includes(i)) {
-                        numberDiv.classList.add('highlight');
-                    }
-
-                    grid1.appendChild(numberDiv);
-                }
-
-                // Cria a grade para o segundo conjunto de números (31-60)
-                const grid2 = document.createElement('div');
-                grid2.className = 'grid';
-
-                for (let i = 31; i <= 60; i++) {
-                    const numberDiv = document.createElement('div');
-                    numberDiv.className = 'number';
-                    numberDiv.textContent = i.toString().padStart(2, '0');
-
-                    if (dezenas.includes(i)) {
-                        numberDiv.classList.add('highlight');
-                    }
-
-                    grid2.appendChild(numberDiv);
-                }
-
-                // Adiciona as duas grades na coluna
-                column.appendChild(grid1);
-                column.appendChild(grid2);
-
-                // Adiciona a coluna ao contêiner do jogo
-                gameContainer.appendChild(column);
-
-                // Adiciona o contêiner do jogo ao resultado
-                resultDiv.appendChild(gameContainer);
-                resultsContainer.appendChild(resultDiv);
-
-                concurso++;
+            if (!response.ok) {
+                keepFetching = false;
+                break;
             }
-        } catch (err) {
-            error.textContent = 'Erro ao buscar os resultados. Tente novamente mais tarde.';
-            console.error(err);
-        } finally {
-            loading.classList.remove('active');
-        }
-    }
 
-    document.getElementById('loadResults').addEventListener('click', fetchResults);
+            const data = await response.json();
+            const dezenas = data.dezenas.map(Number);
+
+            // Armazena o último concurso
+            lastConcurso = data.concurso;
+
+            // Criação do elemento de resultado
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'result';
+
+            const title = document.createElement('h3');
+            title.textContent = `Concurso: ${data.concurso} - Data: ${data.data}`;
+            resultDiv.appendChild(title);
+
+            const gameContainer = document.createElement('div');
+            gameContainer.className = 'game-container';
+
+            const column = document.createElement('div');
+            column.className = 'column';
+
+            const grid1 = document.createElement('div');
+            grid1.className = 'grid';
+
+            for (let i = 1; i <= 30; i++) {
+                const numberDiv = document.createElement('div');
+                numberDiv.className = 'number';
+                numberDiv.textContent = i.toString().padStart(2, '0');
+
+                if (dezenas.includes(i)) {
+                    numberDiv.classList.add('highlight');
+                }
+
+                grid1.appendChild(numberDiv);
+            }
+
+            const grid2 = document.createElement('div');
+            grid2.className = 'grid';
+
+            for (let i = 31; i <= 60; i++) {
+                const numberDiv = document.createElement('div');
+                numberDiv.className = 'number';
+                numberDiv.textContent = i.toString().padStart(2, '0');
+
+                if (dezenas.includes(i)) {
+                    numberDiv.classList.add('highlight');
+                }
+
+                grid2.appendChild(numberDiv);
+            }
+
+            column.appendChild(grid1);
+            column.appendChild(grid2);
+            gameContainer.appendChild(column);
+            resultDiv.appendChild(gameContainer);
+            resultsContainer.appendChild(resultDiv);
+
+            // Atualiza o progresso
+            const progress = Math.min((concurso / estimatedTotal) * 100, 100);
+            progressBar.value = progress;
+            progressLabel.textContent = `${Math.round(progress)}%`;
+
+            concurso++;
+        }
+
+        // Exibe o feedback do último concurso
+        if (lastConcurso !== null) {
+            feedback.textContent = `Carregamento concluído! Último concurso carregado: ${lastConcurso}.`;
+        }
+    } catch (err) {
+        error.textContent = 'Erro ao buscar os resultados. Tente novamente mais tarde.';
+        console.error(err);
+    } finally {
+        loading.classList.remove('active');
+    }
+}
+
+// Adiciona o evento ao botão
+document.getElementById('loadResults').addEventListener('click', fetchResults);
+
     </script>
 </body>
 </html>
