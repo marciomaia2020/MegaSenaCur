@@ -1,283 +1,240 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados da Mega-Sena</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #FFFFFF;
-            color: #2E8B57;
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        h1 {
-            text-align: center;
-            color: #006400;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #F0F8FF;
-        }
-        th, td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #4CAF50;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #F9F9F9;
-        }
-        tr:nth-child(odd) {
-            background-color: #FFFFFF;
-        }
-        .container {
-            max-width: 1200px;
-            width: 100%;
-            padding: 20px;
-        }
-        .button {
-            background-color: #32CD32;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 20px;
-            display: inline-block;
-            border-radius: 5px;
-            text-align: center;
-            transition: background-color 0.3s ease;
-            width: auto;
-        }
-        .button:hover {
-            background-color: #28a745;
-        }
-        .filters-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .filters-container input,
-        .filters-container select {
-            margin: 5px;
-            padding: 8px;
-            font-size: 14px;
-            width: 200px;
-            max-width: 100%;
-        }
-        .filters-container button {
-            margin: 5px;
-            padding: 8px 20px;
-        }
-        .loading {
-            text-align: center;
-            font-size: 18px;
-            color: #FF6347;
-        }
-        .completed {
-            text-align: center;
-            font-size: 18px;
-            color: #32CD32;
-        }
-        .no-results {
-            text-align: center;
-            font-size: 16px;
-            color: #FF6347;
-        }
-        .centralizado {
-            text-align: center;
-            font-size: 12px;
-            color: blue;
-        }
-
-        select {
-            border: 1px solid #4CAF50;
-            border-radius: 5px;
-            padding: 8px;
-            font-size: 14px;
-            background-color: #f9f9f9;
-            transition: background-color 0.3s ease;
-        }
-        select:hover {
-            background-color: #e7e7e7;
-        }
-
-        @media (max-width: 768px) {
-            .filters-container input,
-            .filters-container select,
-            .filters-container button,
-            .button {
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Resultados da Mega-Sena</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background-color: #FFFFFF;
+                color: #2E8B57;
+                line-height: 1.6;
+            }
+            h1 {
+                text-align: center;
+                color: #006400;
+            }
+            table {
                 width: 100%;
-                margin: 10px 0;
+                border-collapse: collapse;
+                margin-top: 20px;
+                background-color: #F0F8FF;
+            }
+            th, td {
+                padding: 10px;
+                text-align: center;
+                border: 1px solid #4CAF50;
+            }
+            th {
+                background-color: #4CAF50;
+                color: white;
+            }
+            tr:nth-child(even) {
+                background-color: #F9F9F9;
+            }
+            tr:nth-child(odd) {
+                background-color: #FFFFFF;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+            .button {
+                background-color: #32CD32;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                cursor: pointer;
+                font-size: 16px;
+                margin-top: 20px;
+                display: inline-block;
+                border-radius: 5px;
+                text-align: center;
+                transition: background-color 0.3s ease;
+            }
+            .button:hover {
+                background-color: #28a745;
             }
             .filters-container {
-                flex-direction: column;
-                align-items: stretch;
+                margin-top: 20px;
+                text-align: center;
             }
-        }
-    </style>
-</head>
-<body>
+            .filters-container input {
+                margin: 5px;
+                padding: 8px;
+                font-size: 14px;
+                width: 200px;
+            }
+            .loading {
+                text-align: center;
+                font-size: 18px;
+                color: #FF6347;
+            }
+            .completed {
+                text-align: center;
+                font-size: 18px;
+                color: #32CD32;
+            }
+            .no-results {
+                text-align: center;
+                font-size: 16px;
+                color: #FF6347;
+            }
+            .centralizado {
+                text-align: center;
+                font-size: 12px;
+                color: blue;
+            }
+            @media (max-width: 768px) {
+                .filters-container input,
+                .filters-container button,
+                .button {
+                    width: 100%;
+                    margin: 10px 0;
+                }
+                .filters-container {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+                td {
+                    font-size: 10px;
+                    text-align: center;  
+                }
+            }
+        </style>
+    </head>
+    <body>
 
-<div class="container">
-    <h1>Resultados da Mega-Sena</h1>
-    <button class="button" onclick="fetchAllMegaSenaResults()">Carregar Resultados</button>
-    
-    <div class="centralizado">
-        <p>Utilizando <b><u>Filtros</u></b></p>
+    <div class="container">
+        <h1>Resultados da Mega-Sena</h1>
+        <button class="button" onclick="fetchAllMegaSenaResults()">Carregar Resultados</button>
+        
+        <div class="centralizado">
+            <p>Utilizando <b><u>Filtros</u></b></p>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters-container">
+            <input type="text" id="filterDate" placeholder="Filtrar por Data (ex.: 31/12)" oninput="applyFilters()">
+            <input type="number" id="filterYear" min="2000" placeholder="Filtrar por Ano" oninput="applyFilters()">
+            <input type="number" id="filterConcurso" min="1" placeholder="Filtrar por Concurso" oninput="applyFilters()">
+            <button class="button" onclick="clearFilters()">Limpar Filtros</button>
+        </div>
+        
+        <div id="loadingMessage" class="loading" style="display: none;">Carregando resultados...</div>
+        <div id="completedMessage" class="completed" style="display: none;">Carregamento concluído!</div>
+        
+        <table id="megaSenaResults">
+            <thead>
+                <tr>
+                    <th>Concurso</th>
+                    <th>Data do Sorteio</th>
+                    <th>Dezenas Sorteadas</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Resultados da Mega-Sena serão inseridos aqui -->
+            </tbody>
+        </table>
     </div>
 
-    <div class="filters-container">
-        <input type="text" id="filterDate" placeholder="Filtrar por Data (ex.: 31/12)" oninput="applyFilters()">
-        <input type="number" id="filterYear" min="2000" placeholder="Filtrar por Ano" oninput="applyFilters()">
-        <input type="number" id="filterConcurso" min="1" placeholder="Filtrar por Concurso" oninput="applyFilters()">
-        
-        <!-- Select para ordenar os resultados -->
-        <select id="filterOrder" onchange="applyFilters()">
-            <option value="0" selected>Selecione</option>
-            <option value="2">Decrescente</option>
-            <option value="3">Ordem de Sorteio</option>
-        </select>
-        
-        
-        
+    <script>
+        let allResults = []; // Variável para armazenar todos os resultados
 
-        <button class="button" onclick="clearFilters()">Limpar Filtros</button>
-    </div>
-    
-    <div id="loadingMessage" class="loading" style="display: none;">Carregando resultados...</div>
-    <div id="completedMessage" class="completed" style="display: none;">Carregamento concluído!</div>
-    
-    <table id="megaSenaResults">
-        <thead>
-            <tr>
-                <th>Concurso</th>
-                <th>Data do Sorteio</th>
-                <th>Dezenas Sorteadas</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Resultados da Mega-Sena serão inseridos aqui -->
-        </tbody>
-    </table>
-</div>
+        // Função para buscar os resultados da Mega-Sena
+        async function fetchAllMegaSenaResults() {
+            const baseUrl = 'https://loteriascaixa-api.herokuapp.com/api/megasena';
+            const loadingMessage = document.getElementById('loadingMessage');
+            const completedMessage = document.getElementById('completedMessage');
+            const tableBody = document.getElementById('megaSenaResults').getElementsByTagName('tbody')[0];
 
-<script>
-    let allResults = []; 
-    let originalResults = []; 
+            // Exibe mensagem de carregamento e limpa resultados antigos
+            loadingMessage.style.display = 'block';
+            completedMessage.style.display = 'none';
+            tableBody.innerHTML = '';
+            allResults = [];
 
-    async function fetchAllMegaSenaResults() {
-        const baseUrl = 'https://loteriascaixa-api.herokuapp.com/api/megasena';
-        const loadingMessage = document.getElementById('loadingMessage');
-        const completedMessage = document.getElementById('completedMessage');
-        const tableBody = document.getElementById('megaSenaResults').getElementsByTagName('tbody')[0];
+            try {
+                const response = await fetch(baseUrl);
+                if (!response.ok) throw new Error('Erro ao acessar a API.');
 
-        loadingMessage.style.display = 'block';
-        completedMessage.style.display = 'none';
-        tableBody.innerHTML = '';
-        allResults = [];
+                const data = await response.json();
 
-        try {
-            const response = await fetch(baseUrl);
-            if (!response.ok) throw new Error('Erro ao acessar a API.');
+                // Verifica se 'data' é um array e contém objetos com a propriedade 'dezenas'
+                if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0].dezenas)) {
+                    allResults = data.map(item => ({
+                        concurso: item.concurso,
+                        data: item.data,
+                        dezenas: item.dezenas.join(' - ') // Usa 'join' apenas se 'dezenas' for um array
+                    }));
+                } else {
+                    throw new Error('Formato de dados inválido ou propriedade "dezenas" não encontrada.');
+                }
 
-            const data = await response.json();
-
-            console.log('Resposta da API:', data);
-
-            if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0].dezenas)) {
-                allResults = data.map(item => ({
-                    concurso: item.concurso,
-                    data: item.data,
-                    dezenas: item.dezenas.join(' - ') 
-                }));
-
-                originalResults = [...allResults];
-            } else {
-                throw new Error('Formato de dados inválido ou propriedade "dezenas" não encontrada.');
+                renderResults(allResults);
+            } catch (error) {
+                console.error(error);
+                alert('Erro ao buscar os resultados. Tente novamente.');
+            } finally {
+                loadingMessage.style.display = 'none';
+                completedMessage.style.display = 'block';
             }
-
-            renderResults(allResults);
-        } catch (error) {
-            console.error(error);
-            alert('Erro ao buscar os resultados. Tente novamente.');
-        } finally {
-            loadingMessage.style.display = 'none';
-            completedMessage.style.display = 'block';
         }
+
+// Função para aplicar filtros
+function applyFilters() {
+    if (allResults.length === 0) {
+        alert('Por favor, carregue os resultados antes de aplicar filtros.');
+        return;
     }
 
-    function applyFilters() {
     const filterDate = document.getElementById('filterDate').value.trim();
     const filterYear = document.getElementById('filterYear').value.trim();
     const filterConcurso = document.getElementById('filterConcurso').value.trim();
-    const filterOrder = document.getElementById('filterOrder').value.trim();
 
-    let filteredResults = originalResults.filter(result => {
+    const filteredResults = allResults.filter(result => {
         const [day, month, year] = result.data.split('/');
-        const formattedDate = `${day}/${month}`;
+        const formattedDate = `${day.padStart(2, '0')}/${month.padStart(2, '0')}`;
 
-        return (
-            (!filterDate || filterDate === formattedDate) &&
-            (!filterYear || filterYear === year) &&
-            (!filterConcurso || parseInt(filterConcurso) === result.concurso)
-        );
+        const matchesDate = !filterDate || filterDate === formattedDate;
+        const matchesYear = !filterYear || filterYear === year;
+        const matchesConcurso = !filterConcurso || parseInt(filterConcurso, 10) === parseInt(result.concurso, 10);
+
+        return matchesDate && matchesYear && matchesConcurso;
     });
-
-    // Ordena os resultados de acordo com a opção selecionada
-    if (filterOrder === "2") {
-        // Decrescente: Ordena os concursos de forma decrescente e inverte as dezenas
-        filteredResults = filteredResults.sort((a, b) => b.concurso - a.concurso); // Decrescente
-        filteredResults.forEach(result => result.dezenas = result.dezenas.sort((a, b) => b - a)); // Dezenas decrescentes
-    } else if (filterOrder === "3") {
-        // Ordem de Sorteio: Mantém a ordem original dos concursos e das dezenas
-        filteredResults = originalResults; // Mantém a ordem original
-    } else {
-        // Ordem Crescente: Mantém a ordem original para concursos e dezenas
-        filteredResults = filteredResults.sort((a, b) => a.concurso - b.concurso); // Crescente
-    }
 
     renderResults(filteredResults);
 }
 
-    function renderResults(results) {
-        const tableBody = document.getElementById('megaSenaResults').getElementsByTagName('tbody')[0];
-        tableBody.innerHTML = '';
 
-        if (results.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="3" class="no-results">Nenhum resultado encontrado.</td></tr>';
-            return;
+        // Função para renderizar os resultados na tabela
+        function renderResults(results) {
+            const tableBody = document.getElementById('megaSenaResults').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';
+
+            if (results.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="3" class="no-results">Nenhum resultado encontrado com os filtros aplicados.</td></tr>';
+                return;
+            }
+
+            results.forEach(result => {
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td>${result.concurso}</td>
+                    <td>${result.data}</td>
+                    <td>${result.dezenas}</td>`;
+            });
         }
 
-        results.forEach(result => {
-            const row = tableBody.insertRow();
-            row.innerHTML = `
-                <td>${result.concurso}</td>
-                <td>${result.data}</td>
-                <td>${result.dezenas}</td>`;
-        });
-    }
-
-    function clearFilters() {
-        document.getElementById('filterDate').value = '';
-        document.getElementById('filterYear').value = '';
-        document.getElementById('filterConcurso').value = '';
-        document.getElementById('filterOrder').value = '';
-        renderResults(originalResults);
-    }
-</script>
-
+        // Função para limpar os filtros
+        function clearFilters() {
+            document.getElementById('filterDate').value = '';
+            document.getElementById('filterYear').value = '';
+            document.getElementById('filterConcurso').value = '';
+            renderResults(allResults);
+        }
+    </script>
 </body>
 </html>
