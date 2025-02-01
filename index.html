@@ -2,10 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    	<!----======== Font Awesome 5 JAVASCRIPT  ENTRE NO SITE E PEGUE O CÓDIGO (afb02bf9ac)======== -->
-		<script src="https://kit.fontawesome.com/afb02bf9ac.js" crossorigin="anonymous"></script>
-		<!--Márciofernando.maia@yahoo.com.br-->
-		<script src="https://kit.fontawesome.com/2fa2c650ed.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/afb02bf9ac.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/2fa2c650ed.js" crossorigin="anonymous"></script>
 
     <title>Resultados Mega Sena</title>
     <style>
@@ -82,9 +80,10 @@
 
         .numbers-grid {
             display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 5px;
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            gap: 10px;
             margin-top: 20px;
+            padding: 5 10px;
         }
 
         .number {
@@ -133,13 +132,53 @@
             background-color: #e6f4ed;
             border-radius: 4px;
         }
-        .outros{
+        
+        .prize-info p {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+
+        .prize-info span {
+            font-weight: bold;
+            color: #209869;
+            font-size: 16px;
+        }
+
+        .acumulou-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .proximo-concurso {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px dashed #209869;
+        }
+
+        .proximo-concurso p {
+            color: #2c3e50;
+        }
+
+        .valor-estimado {
+            font-size: 18px;
+            color: #e67e22;
+            font-weight: bold;
+        }
+        .outros {
             display: inline;
             background-color: #e6f4ed;
             align-content: space-between;
             background-color: yellow;
-         }
-    </style>
+        }
+        h1, h2, h3, h4, h6, h6{ text-align: center;}
+        @media screen and (max-width: 600px) {
+         body {
+             background-color: lightblue;
+                }
+        }
+
+</style>
 </head>
 <body>
     <div class="container">
@@ -150,41 +189,45 @@
                 <input type="number" id="concursoInput" placeholder="Nº do concurso">
                 <button onclick="buscarResultado()" id="searchButton">Buscar Resultado</button>
             </div>
+            <hr />
             <div id="loading" class="loading">Buscando resultado...</div>
             <div id="error" class="error"></div>
         </div>
 
         <div id="resultInfo" class="result-info" style="display: none;">
             <h3>Resultado do Concurso <span id="concursoNumero"></span></h3>
-            <p>Data do sorteio: <span id="dataSorteio"></span></p>
+            <h3>Data do sorteio: <span id="dataSorteio"></span></h3>
+            <h6>Local: <span id="localSorteio"></span></h6>
+            <hr />
             <div class="numbers-display" id="numbersDisplay"></div>
+            <hr />
+            <div class="numbers-grid" id="grid">
+                <!-- Números serão gerados via JavaScript -->
+            </div>
+            <hr />
+
             <div class="prize-info">
-                <p>Prêmio: R$ <span id="premioValor"></span></p>
-                <p>Ganhadores: <span id="ganhadores"></span></p>
+                <p class="acumulou-text">Acumulou: <span id="acumulou"></span></p>
+                <p><i class="fas fa-trophy"></i> Ganhadores 6 acertos: <span id="ganhadores6"></span></p>
+                <p><i class="fas fa-star"></i> Ganhadores 5 acertos: <span id="ganhadores5"></span></p>
+                <p><i class="fas fa-check-circle"></i> Ganhadores 4 acertos: <span id="ganhadores4"></span></p>
+                <p><i class="fas fa-dollar-sign"></i> Prêmio 6 acertos: R$ <span id="premio6"></span></p>
+                <p><i class="fas fa-dollar-sign"></i> Prêmio 5 acertos: R$ <span id="premio5"></span></p>
+                <p><i class="fas fa-dollar-sign"></i> Prêmio 4 acertos: R$ <span id="premio4"></span></p>
+                <div class="proximo-concurso">
+                    <p><i class="fas fa-calendar-alt"></i> Próximo Concurso: <span id="proximoConcurso"></span></p>
+                    <p><i class="fas fa-clock"></i> Data Próximo Concurso: <span id="dataProximoConcurso"></span></p>
+                    <p><i class="fas fa-money-bill-wave"></i> Valor Estimado: <span id="valorEstimadoProximoConcurso" class="valor-estimado"></span></p>
+                </div>
             </div>
         </div>
 
-        <div class="numbers-grid" id="grid">
-            <!-- Números serão gerados via JavaScript -->
-        </div>
+  
     </div>
 
-    <p>HISTÓRICO DE RESULTADOS...</p>
-
-    <div class="outros"> 
-        <ol>
-            <li><a href="./HistoricoDeResultados/index.html" target="_blank"><i class="fa-solid fa-arrow-right"></i></a> Histórico de Resultados - Vertical</li><br />
-            <li><a href="./HistoricoDeResultados/index1.html" target="_blank"><i class="fa-solid fa-arrow-right"></i></a> Histórico de Resultados - Horizontal</li><br />
-            <li><a href="./HistoricoDeResultados/index1a.html" target="_blank"><i class="fa-solid fa-arrow-right"></i></a> Histórico de Resultados - Quadrantes com estatísticas</li><br />
-            <li><a href="./HistoricoDeResultados/index2.html" target="_blank"><i class="fa-solid fa-arrow-right"></i></a> Gerador de Combinações</li><br />
-            <li><a href="./HistoricoDeResultados/index3.html" target="_blank"><i class="fa-solid fa-arrow-right"></i></a> Resultados de todos os sorteios da Mega Sena</li><br />
-            <li><a href="./HistoricoDeResultados/index5.html" target="_blank"><i class="fa-solid fa-arrow-right"></i></a> Resultados (<small>em 5s</small>) de todos os sorteios da Mega Sena - com filtros</li><br />
-            <li><a href="./HistoricoDeResultados/index4.html" target="_blank"><i class="fa-solid fa-arrow-right"></i></a> Resultados apenas dos sorteios da Mega da Virada</li>
-        </ol>
-    </div>
+    <h3>Em breve muitas curiosidades sobre este modalidade.</h3>
 
     <script>
-        // Gera a grade de números
         function generateGrid() {
             const grid = document.getElementById('grid');
             for (let i = 1; i <= 60; i++) {
@@ -195,7 +238,6 @@
             }
         }
 
-        // Formata o valor do prêmio
         function formatPrize(value) {
             return new Intl.NumberFormat('pt-BR', {
                 minimumFractionDigits: 2,
@@ -203,13 +245,11 @@
             }).format(value);
         }
 
-        // Formata a data
         function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('pt-BR');
+            const [day, month, year] = dateString.split('/');
+            return `${day}/${month}/${year}`;
         }
 
-        // Busca o resultado na API
         async function buscarResultado() {
             const concursoInput = document.getElementById('concursoInput');
             const concurso = concursoInput.value;
@@ -218,19 +258,13 @@
             const button = document.getElementById('searchButton');
             const resultInfo = document.getElementById('resultInfo');
 
-            // Limpa estados anteriores
             error.textContent = '';
             loading.classList.add('active');
             button.disabled = true;
             resultInfo.style.display = 'none';
 
             try {
-                // URL base corrigida para a API
-                const baseUrl = 'https://loteriascaixa-api.herokuapp.com/api';
-                const url = concurso 
-                    ? `${baseUrl}/megasena/${concurso}`
-                    : `${baseUrl}/megasena/latest`;
-
+                const url = 'https://loteriascaixa-api.herokuapp.com/api/megasena/' + (concurso || 'latest');
                 const response = await fetch(url);
                 
                 if (!response.ok) {
@@ -242,19 +276,29 @@
                 // Atualiza as informações na tela
                 document.getElementById('concursoNumero').textContent = data.concurso;
                 document.getElementById('dataSorteio').textContent = formatDate(data.data);
-                document.getElementById('premioValor').textContent = formatPrize(
-                    data.estimativa_premio || data.valor_estimado || 0
-                );
-                document.getElementById('ganhadores').textContent = 
-                    data.premiacao?.[0]?.quantidade_ganhadores || 
-                    data.quantidadeGanhadores || 
-                    0;
+                document.getElementById('localSorteio').textContent = data.local;
+                document.getElementById('acumulou').textContent = data.acumulou ? 'Sim' : 'Não';
+                
+                // Atualiza informações de ganhadores e prêmios
+                const premiacoes = data.premiacoes;
+                document.getElementById('ganhadores6').textContent = premiacoes[0].ganhadores;
+                document.getElementById('ganhadores5').textContent = premiacoes[1].ganhadores;
+                document.getElementById('ganhadores4').textContent = premiacoes[2].ganhadores;
+                
+                document.getElementById('premio6').textContent = formatPrize(premiacoes[0].valorPremio);
+                document.getElementById('premio5').textContent = formatPrize(premiacoes[1].valorPremio);
+                document.getElementById('premio4').textContent = formatPrize(premiacoes[2].valorPremio);
+                
+                // Informações do próximo concurso
+                document.getElementById('proximoConcurso').textContent = data.proximoConcurso;
+                document.getElementById('dataProximoConcurso').textContent = formatDate(data.dataProximoConcurso);
+                document.getElementById('valorEstimadoProximoConcurso').textContent = 
+                    formatPrize(data.valorEstimadoProximoConcurso);
 
                 // Atualiza os números sorteados
                 const numbersDisplay = document.getElementById('numbersDisplay');
                 numbersDisplay.innerHTML = '';
-                const dezenas = data.dezenas || data.numeros;
-                dezenas.forEach(numero => {
+                data.dezenas.forEach(numero => {
                     const ball = document.createElement('div');
                     ball.className = 'number-ball';
                     ball.textContent = numero;
@@ -265,7 +309,7 @@
                 document.querySelectorAll('.number').forEach(num => {
                     num.classList.remove('selected');
                 });
-                dezenas.forEach(numero => {
+                data.dezenas.forEach(numero => {
                     const numberDiv = document.querySelector(`.number:nth-child(${numero})`);
                     if (numberDiv) {
                         numberDiv.classList.add('selected');
